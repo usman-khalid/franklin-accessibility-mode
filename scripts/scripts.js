@@ -75,12 +75,14 @@ export function createElement(tagName, props, html) {
 }
 
 const accessibilityMode = async (e) => {
-  const pluginButton = e.target.shadowRoot.querySelector('.accessibility-mode > button');
+  const pluginButton = e.target.shadowRoot.querySelector('plugin-action-bar')
+    ? e.target.shadowRoot.querySelector('plugin-action-bar').shadowRoot.querySelector('.accessibility-mode')
+    : e.target.shadowRoot.querySelector('.accessibility-mode > button');
 
   isA11yModeActive = !isA11yModeActive;
 
   if (isA11yModeActive) {
-    pluginButton.style.backgroundColor = '#fb0f01';
+    pluginButton.style.backgroundColor = '#4e9a17';
     pluginButton.style.color = '#fff';
   } else {
     pluginButton.removeAttribute('style');
@@ -90,13 +92,14 @@ const accessibilityMode = async (e) => {
   await initAccessibilityMode(isA11yModeActive);
 };
 
-const sk = document.querySelector('helix-sidekick');
+const sk = document.querySelector('aem-sidekick') || document.querySelector('helix-sidekick');
 
 if (sk) {
   sk.addEventListener('custom:accessibility-mode', accessibilityMode);
 } else {
   document.addEventListener('sidekick-ready', () => {
-    document.querySelector('helix-sidekick').addEventListener('custom:accessibility-mode', accessibilityMode);
+    const sk = document.querySelector('aem-sidekick') || document.querySelector('helix-sidekick');
+    sk.addEventListener('custom:accessibility-mode', accessibilityMode);
   }, {
     once: true,
   });
